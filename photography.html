@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photographs — Ying Pang</title>
+<link rel="icon" href="files/y.ico">
+<meta name="description" content="Photographs by Ying Pang — coastlines, weather, and whoever happened to be there.">
+<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700|Source+Sans+Pro:300,400,600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   PALETTE  —  deep blue-black ground, warm gold accent
+   ============================================================ */
+:root{
+  --bg:#0a0e12;
+  --bg-2:#121a22;
+  --fg:#eef1f5;
+  --fg-dim:#93a1ae;
+  --gold:#d8a765;
+  --line:rgba(255,255,255,.11);
+  --maxw:1280px;
+  --serif:"Libre Baskerville",Georgia,"Songti SC",serif;
+  --sans:"Source Sans Pro","PingFang SC","Microsoft YaHei",-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--fg);
+  font-family:var(--sans);font-weight:300;font-size:17px;line-height:1.75;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+.bar{
+  position:fixed;top:0;left:0;right:0;z-index:120;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:24px;padding:16px 34px;
+  background:rgba(10,14,18,0);border-bottom:1px solid transparent;
+  transition:background .45s,border-color .45s,backdrop-filter .45s;
+}
+.bar.stuck{
+  background:rgba(10,14,18,.82);
+  backdrop-filter:blur(14px) saturate(1.3);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);
+  border-bottom-color:var(--line);
+}
+.bar .name{font-family:var(--serif);font-size:15px;letter-spacing:.04em;white-space:nowrap}
+.bar nav{display:flex;gap:26px;flex-wrap:wrap;justify-content:flex-end}
+.bar nav a{
+  font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--fg-dim);position:relative;padding-bottom:3px;transition:color .3s;
+}
+.bar nav a::after{
+  content:"";position:absolute;left:0;bottom:0;width:0;height:1px;
+  background:var(--gold);transition:width .35s cubic-bezier(.2,.7,.2,1);
+}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a:hover::after,.bar nav a.here::after{width:100%}
+.bar nav a.here{color:var(--gold)}
+
+/* ============================================================
+   HERO  —  blurred ground + the photo shown uncropped
+   ============================================================ */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;
+      padding:120px 34px 90px;overflow:hidden}
+.hero-bg{
+  position:absolute;inset:-70px;
+  background:url("photographs/Weixin%20Image_20260823154810_82_26.jpg") center/cover no-repeat;
+  filter:blur(52px) saturate(.75) brightness(.4);transform:scale(1.12);
+}
+.hero-scrim{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(120% 90% at 50% 45%,rgba(10,14,18,.15) 0%,rgba(10,14,18,.82) 100%),
+    linear-gradient(to bottom,rgba(10,14,18,.75) 0%,rgba(10,14,18,.25) 40%,var(--bg) 100%);
+}
+.hero-inner{
+  position:relative;z-index:2;width:100%;max-width:var(--maxw);margin:0 auto;
+  display:grid;grid-template-columns:1.02fr .98fr;gap:70px;align-items:center;
+}
+.eyebrow{
+  font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:26px;
+}
+.hero h1{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(3rem,7.5vw,5.4rem);line-height:1.02;letter-spacing:-.015em;
+}
+.hero h1 em{display:block;font-style:italic;font-size:.42em;letter-spacing:.06em;
+            color:var(--fg-dim);margin-top:18px;font-weight:400}
+.hero p{max-width:44ch;margin-top:30px;color:var(--fg-dim);font-size:16.5px}
+.hero p.zh{margin-top:10px;font-size:15px;color:rgba(147,161,174,.72)}
+.hero-rule{width:56px;height:1px;background:var(--gold);margin:34px 0 0;opacity:.85}
+.hero-shot{position:relative}
+.hero-shot img{
+  max-height:74vh;width:auto;margin:0 0 0 auto;
+  box-shadow:0 40px 100px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.07);
+}
+.hero-shot figcaption{
+  margin-top:14px;text-align:right;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(147,161,174,.65);
+}
+.cue{
+  position:absolute;left:50%;bottom:30px;transform:translateX(-50%);z-index:3;
+  font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--fg-dim);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.cue span{display:block;width:1px;height:42px;background:linear-gradient(var(--gold),transparent);
+          animation:drop 2.4s ease-in-out infinite}
+@keyframes drop{0%,100%{opacity:.25;transform:scaleY(.5)}50%{opacity:1;transform:scaleY(1)}}
+
+/* ============================================================
+   GALLERY
+   ============================================================ */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 34px}
+.sec-head{padding:104px 0 44px;display:flex;align-items:baseline;justify-content:space-between;
+          gap:24px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:44px}
+.sec-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.6rem,3vw,2.3rem)}
+.sec-head .count{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--fg-dim)}
+
+.grid{column-count:3;column-gap:22px}
+@media(max-width:1000px){.grid{column-count:2}}
+@media(max-width:620px){.grid{column-count:1}}
+
+.card{
+  break-inside:avoid;-webkit-column-break-inside:avoid;
+  position:relative;margin:0 0 22px;overflow:hidden;cursor:zoom-in;
+  background:var(--bg-2);
+}
+/* Cards are visible by default. The fade-in only engages when JS adds
+   .reveal to the grid, so a JS/IntersectionObserver failure can never
+   leave the gallery blank. */
+.grid.reveal .card{
+  opacity:0;transform:translateY(26px);
+  transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);
+}
+.grid.reveal .card.in{opacity:1;transform:none}
+.card img{width:100%;transition:transform 1.1s cubic-bezier(.2,.7,.2,1),filter .6s}
+.card:hover img{transform:scale(1.045)}
+.card::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);
+  transition:box-shadow .4s;
+}
+.card:hover::after{box-shadow:inset 0 0 0 1px rgba(216,167,101,.45)}
+.meta{
+  position:absolute;left:0;right:0;bottom:0;padding:52px 20px 18px;
+  background:linear-gradient(to top,rgba(6,9,12,.92) 10%,rgba(6,9,12,.55) 55%,transparent 100%);
+  opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;
+}
+.card:hover .meta{opacity:1;transform:none}
+.meta h3{font-family:var(--serif);font-weight:400;font-size:18px;line-height:1.3}
+.meta .zh{font-size:13px;color:var(--gold);letter-spacing:.08em;margin-top:5px}
+@media(hover:none){.meta{opacity:1;transform:none}}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+.lb{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(6,8,11,.97);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  opacity:0;visibility:hidden;transition:opacity .34s,visibility .34s;
+  display:flex;align-items:center;justify-content:center;
+  padding:74px 84px;
+}
+.lb.open{opacity:1;visibility:visible}
+.lb figure{display:flex;flex-direction:column;align-items:center;gap:16px;max-height:100%}
+.lb img{max-height:calc(100vh - 190px);width:auto;object-fit:contain;
+        box-shadow:0 30px 90px rgba(0,0,0,.7)}
+.lb figcaption{text-align:center}
+.lb figcaption h3{font-family:var(--serif);font-weight:400;font-size:19px}
+.lb figcaption .zh{font-size:13.5px;color:var(--gold);letter-spacing:.08em;margin-top:4px}
+.lb figcaption p{font-size:14px;color:var(--fg-dim);margin-top:8px;max-width:60ch}
+.lb-btn{
+  position:absolute;background:none;border:1px solid var(--line);color:var(--fg);
+  width:48px;height:48px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .3s,border-color .3s,transform .3s;
+}
+.lb-btn:hover{background:rgba(255,255,255,.07);border-color:var(--gold);transform:scale(1.08)}
+.lb-close{top:24px;right:28px}
+.lb-prev{left:24px;top:50%;margin-top:-24px}
+.lb-next{right:24px;top:50%;margin-top:-24px}
+.lb-count{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+          font-size:11px;letter-spacing:.24em;color:var(--fg-dim)}
+@media(max-width:700px){
+  .lb{padding:64px 14px}
+  .lb img{max-height:calc(100vh - 210px)}
+  .lb-prev{left:10px}.lb-next{right:10px}
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{
+  margin-top:110px;border-top:1px solid var(--line);
+  padding:52px 34px 60px;text-align:center;color:var(--fg-dim);font-size:14px;
+}
+footer .back{
+  display:inline-block;margin-bottom:20px;font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--gold);border-bottom:1px solid transparent;
+  padding-bottom:3px;transition:border-color .3s;
+}
+footer .back:hover{border-bottom-color:var(--gold)}
+
+/* ============================================================
+   RESPONSIVE HERO
+   ============================================================ */
+@media(max-width:900px){
+  .hero{padding:104px 22px 80px;min-height:auto}
+  .hero-inner{grid-template-columns:1fr;gap:44px}
+  .hero-shot img{margin:0 auto;max-height:56vh}
+  .hero-shot figcaption{text-align:center}
+  .cue{display:none}
+  .wrap{padding:0 22px}
+  .bar{padding:13px 20px}
+  .bar nav{gap:16px}
+  .bar nav a{font-size:10.5px;letter-spacing:.12em}
+  .sec-head{padding:72px 0 34px}
+}
+</style>
+</head>
+<body>
+
+<div class="bar" id="bar">
+  <a class="name" href="index.html">Ying Pang, PhD</a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#publications">Publications</a>
+    <a href="index.html#projects">Projects</a>
+    <a href="photography.html" class="here">Photographs</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
+</div>
+
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <div class="eyebrow">Ying Pang &nbsp;·&nbsp; 摄影</div>
+      <h1>Photographs<em>光影之外</em></h1>
+      <div class="hero-rule"></div>
+      <!-- ▼ 这段自我介绍可以改成你自己的话 ▼ -->
+      <p>Pictures taken on the way to somewhere else — coastlines, weather,
+         and whoever happened to be standing there.</p>
+      <p class="zh">路过时拍下的照片——海岸、天气，以及恰好站在那里的人与动物。</p>
+      <!-- ▲ ---------------------------- ▲ -->
+    </div>
+    <figure class="hero-shot">
+      <img src="photographs/Weixin%20Image_20260823154810_82_26.jpg" alt="Blue hour, street lamps reflected in a puddle">
+      <figcaption>Blue Hour &nbsp;/&nbsp; 蓝调时刻</figcaption>
+    </figure>
+  </div>
+  <a class="cue" href="#gallery"><span></span>Scroll</a>
+</header>
+
+<main class="wrap" id="gallery">
+  <div class="sec-head">
+    <h2>Selected Work &nbsp;<span style="color:var(--fg-dim);font-size:.62em">作品选</span></h2>
+    <div class="count" id="count"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <a class="back" href="index.html">← Back to homepage</a>
+  <p>All photographs © Ying Pang. &nbsp;摄影作品版权归庞颖所有。</p>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">&#10005;</button>
+  <button class="lb-btn lb-prev"  id="lbPrev"  aria-label="Previous">&#8249;</button>
+  <button class="lb-btn lb-next"  id="lbNext"  aria-label="Next">&#8250;</button>
+  <figure>
+    <img id="lbImg" src="" alt="">
+    <figcaption>
+      <h3 id="lbTitle"></h3>
+      <div class="zh" id="lbZh"></div>
+      <p id="lbCap"></p>
+    </figcaption>
+  </figure>
+  <div class="lb-count" id="lbCount"></div>
+</div>
+
+<script>
+/* ============================================================================
+   照片清单 —— 想加照片 / 改标题 / 调顺序，只改这个数组就行。
+     file  : photographs/ 里的文件名（空格会自动转义，不用手动改）
+     title : 英文标题        zh    : 中文标题
+     cap   : 英文说明        zhCap : 中文说明
+   数组顺序 = 页面顺序 = 灯箱翻页顺序。
+   下面这两行 PHOTOS:BEGIN / PHOTOS:END 是 update_gallery.py 的定位标记，
+   请不要删掉。
+   ============================================================================ */
+/* PHOTOS:BEGIN */
+const PHOTOS = [
+  { file:"Weixin Image_20260823154801_79_26.jpg",
+    title:"The Edge", zh:"崖上",
+    cap:"One figure, one cliff, and a great deal of sky.",
+    zhCap:"一个人，一片崖，和大得过分的天空。" },
+
+  { file:"Weixin Image_20260823154810_82_26.jpg",
+    title:"Blue Hour", zh:"蓝调时刻",
+    cap:"After the rain the street lamps got a second set of lamps.",
+    zhCap:"雨后，每一盏路灯都多了一盏。" },
+
+  { file:"Weixin Image_20260823162957_91_26.jpg",
+    title:"The Path to the Light", zh:"去灯塔的路",
+    cap:"A fence, a ridge, and a very small door at the end of it.",
+    zhCap:"一道栅栏，一条山脊，尽头是一扇很小的门。" },
+
+  { file:"Weixin Image_20260823154754_75_26.jpg",
+    title:"Standing Watch", zh:"守望",
+    cap:"A gull keeps the last plank of the old jetty.",
+    zhCap:"海鸥守着旧码头最后一块木板。" },
+
+  { file:"Weixin Image_20260823162954_88_26.jpg",
+    title:"Two Skies", zh:"两片天",
+    cap:"Stars through the windscreen, a whole town in the wing mirror.",
+    zhCap:"挡风玻璃里是星星，后视镜里是一整座小镇。" },
+
+  { file:"Weixin Image_20260823154808_80_26.jpg",
+    title:"Right of Way", zh:"让路",
+    cap:"Eleven ducklings, one crossing, no negotiation.",
+    zhCap:"十一只小鸭过马路，没有商量的余地。" },
+
+  { file:"Weixin Image_20260823163002_93_26.jpg",
+    title:"Low Cloud, Long Beach", zh:"低云长滩",
+    cap:"The weather came down to meet them halfway.",
+    zhCap:"云压得很低，像是下来接他们。" },
+
+  { file:"Weixin Image_20260823162949_84_26.jpg",
+    title:"Shooting the Moon", zh:"拍月亮",
+    cap:"Everyone on the balcony had the same idea.",
+    zhCap:"那天晚上，阳台上的人想的都是同一件事。" },
+
+  { file:"Weixin Image_20260823154755_76_26.jpg",
+    title:"Two on the Breakwater", zh:"堤上",
+    cap:"The sky took up almost everything; they took the rest.",
+    zhCap:"天空占去了几乎所有，剩下的留给他们。" },
+
+  { file:"Weixin Image_20260823162950_86_26.jpg",
+    title:"Above the Weather", zh:"云上",
+    cap:"Six kilometres up, the day was still going on.",
+    zhCap:"六公里高处，白天还没有结束。" },
+
+  { file:"Weixin Image_20260823154757_78_26.jpg",
+    title:"Waiting for the Driver", zh:"等主人",
+    cap:"He has the wheel. He does not have the keys.",
+    zhCap:"方向盘归它，钥匙不归它。" },
+
+  { file:"Weixin Image_20260823162955_89_26.jpg",
+    title:"Two on a Lamp", zh:"灯上二鸟",
+    cap:"The whole sky available, and they chose the one metal branch.",
+    zhCap:"整片天空都可以停，它们选了唯一一根铁枝。" },
+
+  { file:"Weixin Image_20260823163003_94_26.jpg",
+    title:"Cold Swim", zh:"下水",
+    cap:"Snow on the far range; he went in anyway.",
+    zhCap:"对面山上还有雪，它还是下去了。" },
+
+  { file:"Weixin Image_20260823162956_90_26.jpg",
+    title:"Everyone Came to Watch", zh:"都来看",
+    cap:"A roofline turned into a row of silhouettes.",
+    zhCap:"屋脊变成了一排剪影。" },
+
+  { file:"Weixin Image_20260823154756_77_26.jpg",
+    title:"Lakeside Regular", zh:"湖畔常客",
+    cap:"Mountains, steamers, and a bird entirely unimpressed.",
+    zhCap:"雪山与游船，和一只毫不动容的鸟。" },
+
+  { file:"Weixin Image_20260823162958_92_26.jpg",
+    title:"Skyline Walk", zh:"天际线上的散步",
+    cap:"From down in the grass, an ordinary path becomes the horizon.",
+    zhCap:"趴在草里看，一条普通的小路就成了地平线。" },
+
+  { file:"Weixin Image_20260823162950_85_26.jpg",
+    title:"Through Cloud", zh:"穿云",
+    cap:"It kept going in and out all evening.",
+    zhCap:"它进进出出了一整晚。" },
+
+  { file:"Weixin Image_20260823154809_81_26.jpg",
+    title:"Three Shells", zh:"三枚贝壳",
+    cap:"Brought back from the beach, dried on the rail, left in a row.",
+    zhCap:"从沙滩带回，晾在栏杆上，排成一列。" },
+
+  { file:"Weixin Image_20260823162953_87_26.jpg",
+    title:"City, Out of Focus", zh:"失焦的城市",
+    cap:"Some nights the city refuses to come into focus.",
+    zhCap:"有些晚上，城市怎么都对不上焦。" },
+
+  { file:"Weixin Image_20260823154812_83_26.jpg",
+    title:"Self-portrait with Daisies", zh:"雏菊自画像",
+    cap:"The lawn lent me two eyes.",
+    zhCap:"草地借给我两只眼睛。" }
+];
+/* PHOTOS:END */
+
+/* ---------- build the grid ---------- */
+const grid = document.getElementById('grid');
+grid.innerHTML = PHOTOS.map(function(p, i){
+  return '<figure class="card" data-i="' + i + '">' +
+           '<img src="photographs/' + encodeURIComponent(p.file) + '" alt="' + p.title + '" loading="lazy" decoding="async">' +
+           '<figcaption class="meta"><h3>' + p.title + '</h3>' +
+           '<div class="zh">' + p.zh + '</div></figcaption>' +
+         '</figure>';
+}).join('');
+document.getElementById('count').textContent = PHOTOS.length + ' Photographs';
+
+/* ---------- reveal on scroll (progressive enhancement) ---------- */
+var cards = document.querySelectorAll('.card');
+var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (window.IntersectionObserver && !reduceMotion) {
+  grid.classList.add('reveal');
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin:'0px 0px -8% 0px', threshold:.06 });
+
+  cards.forEach(function(c, i){
+    c.style.transitionDelay = (i % 3) * 90 + 'ms';
+    io.observe(c);
+  });
+
+  // Failsafe: if the observer never fires (background tab, odd browser),
+  // show everything anyway rather than leaving the page blank.
+  setTimeout(function(){
+    cards.forEach(function(c){ c.classList.add('in'); });
+  }, 3000);
+}
+
+/* ---------- sticky bar ---------- */
+var bar = document.getElementById('bar');
+function onScroll(){ bar.classList.toggle('stuck', window.scrollY > 40); }
+window.addEventListener('scroll', onScroll, { passive:true });
+onScroll();
+
+/* ---------- lightbox ---------- */
+var lb    = document.getElementById('lb');
+var lbImg = document.getElementById('lbImg');
+var cur   = 0;
+
+function show(i){
+  cur = (i + PHOTOS.length) % PHOTOS.length;
+  var p = PHOTOS[cur];
+  lbImg.src = 'photographs/' + encodeURIComponent(p.file);
+  lbImg.alt = p.title;
+  document.getElementById('lbTitle').textContent = p.title;
+  document.getElementById('lbZh').textContent    = p.zh;
+  document.getElementById('lbCap').textContent   = p.cap + '  ' + p.zhCap;
+  document.getElementById('lbCount').textContent = (cur + 1) + ' / ' + PHOTOS.length;
+}
+function openLb(i){ show(i); lb.classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeLb(){ lb.classList.remove('open'); document.body.style.overflow = ''; }
+
+grid.addEventListener('click', function(e){
+  var card = e.target.closest('.card');
+  if (card) openLb(+card.dataset.i);
+});
+document.getElementById('lbClose').onclick = closeLb;
+document.getElementById('lbPrev').onclick  = function(e){ e.stopPropagation(); show(cur - 1); };
+document.getElementById('lbNext').onclick  = function(e){ e.stopPropagation(); show(cur + 1); };
+lb.addEventListener('click', function(e){
+  if (e.target === lb || e.target.tagName === 'FIGURE') closeLb();
+});
+document.addEventListener('keydown', function(e){
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape')     closeLb();
+  if (e.key === 'ArrowLeft')  show(cur - 1);
+  if (e.key === 'ArrowRight') show(cur + 1);
+});
+</script>
+</body>
+</html>
