@@ -69,7 +69,7 @@ img{display:block;max-width:100%}
       padding:120px 34px 90px;overflow:hidden}
 .hero-bg{
   position:absolute;inset:-70px;
-  background:url("photographs/Weixin%20Image_20260823154810_82_26.jpg") center/cover no-repeat;
+  background:url("photographs/thumbs/Weixin%20Image_20260823154810_82_26.jpg") center/cover no-repeat;
   filter:blur(52px) saturate(.75) brightness(.4);transform:scale(1.12);
 }
 .hero-scrim{
@@ -122,9 +122,15 @@ img{display:block;max-width:100%}
 .sec-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.6rem,3vw,2.3rem)}
 .sec-head .count{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--fg-dim)}
 
+/* 无 JS 时的兜底排版：CSS 多栏。JS 跑起来后会换成下面的 .packed 等高分栏。 */
 .grid{column-count:3;column-gap:22px}
 @media(max-width:1000px){.grid{column-count:2}}
 @media(max-width:620px){.grid{column-count:1}}
+
+/* JS 分栏：每张图放进当前最矮的一栏，栏底比 CSS 多栏齐得多 */
+.grid.packed{column-count:auto;display:flex;gap:22px;align-items:flex-start}
+.grid.packed>.col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:22px}
+.grid.packed .card{margin:0}
 
 .card{
   break-inside:avoid;-webkit-column-break-inside:avoid;
@@ -139,7 +145,9 @@ img{display:block;max-width:100%}
   transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);
 }
 .grid.reveal .card.in{opacity:1;transform:none}
-.card img{width:100%;transition:transform 1.1s cubic-bezier(.2,.7,.2,1),filter .6s}
+/* height:auto 必须写。img 上带了 width/height 属性，只给 width:100% 的话
+   浏览器会沿用属性里的像素高度，图片就不会按栏宽等比缩放。 */
+.card img{width:100%;height:auto;transition:transform 1.1s cubic-bezier(.2,.7,.2,1),filter .6s}
 .card:hover img{transform:scale(1.045)}
 .card::after{
   content:"";position:absolute;inset:0;pointer-events:none;
@@ -254,7 +262,7 @@ footer .back:hover{border-bottom-color:var(--gold)}
       <!-- ▲ ---------------------------- ▲ -->
     </div>
     <figure class="hero-shot">
-      <img src="photographs/Weixin%20Image_20260823154810_82_26.jpg" alt="Blue hour, street lamps reflected in a puddle">
+      <img src="photographs/large/Weixin%20Image_20260823154810_82_26.jpg" alt="Blue hour, street lamps reflected in a puddle">
       <figcaption>Blue Hour &nbsp;/&nbsp; 蓝调时刻</figcaption>
     </figure>
   </div>
@@ -271,7 +279,7 @@ footer .back:hover{border-bottom-color:var(--gold)}
 
 <footer>
   <a class="back" href="index.html">← Back to homepage</a>
-  <p>All photographs © Ying Pang. &nbsp;摄影作品版权归庞颖所有。</p>
+  <p>All photographs © Ying Pang. &nbsp;保留摄影作品版权。</p>
 </footer>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
@@ -304,115 +312,362 @@ const PHOTOS = [
   { file:"Weixin Image_20260823154801_79_26.jpg",
     title:"The Edge", zh:"崖上",
     cap:"One figure, one cliff, and a great deal of sky.",
-    zhCap:"一个人，一片崖，和大得过分的天空。" },
+    zhCap:"一个人，一片崖，和大得过分的天空。",
+    w:507, h:900 },
 
   { file:"Weixin Image_20260823154810_82_26.jpg",
     title:"Blue Hour", zh:"蓝调时刻",
     cap:"After the rain the street lamps got a second set of lamps.",
-    zhCap:"雨后，每一盏路灯都多了一盏。" },
+    zhCap:"雨后，每一盏路灯都多了一盏。",
+    w:675, h:900 },
+
+  { file:"IMG_1855.JPG",
+    title:"Cloud Over the Cliffs", zh:"崖上有云",
+    cap:"One cloud, and it chose that exact ridge.",
+    zhCap:"一朵云，偏偏选中那道山脊。",
+    w:900, h:675 },
 
   { file:"Weixin Image_20260823162957_91_26.jpg",
     title:"The Path to the Light", zh:"去灯塔的路",
     cap:"A fence, a ridge, and a very small door at the end of it.",
-    zhCap:"一道栅栏，一条山脊，尽头是一扇很小的门。" },
+    zhCap:"一道栅栏，一条山脊，尽头是一扇很小的门。",
+    w:416, h:900 },
+
+  { file:"IMG_1848.JPG",
+    title:"The Tunnel", zh:"隧道",
+    cap:"Someone cut this through the rock by hand, for a view.",
+    zhCap:"有人为了看一眼海，一凿一凿把岩石凿穿。",
+    w:675, h:900 },
+
+  { file:"IMG_2177.JPG",
+    title:"Jetty, Last Light", zh:"暮色码头",
+    cap:"The water went flat and the hills went gold.",
+    zhCap:"水面静下来，山就镀了金。",
+    w:900, h:675 },
 
   { file:"Weixin Image_20260823154754_75_26.jpg",
     title:"Standing Watch", zh:"守望",
     cap:"A gull keeps the last plank of the old jetty.",
-    zhCap:"海鸥守着旧码头最后一块木板。" },
+    zhCap:"海鸥守着旧码头最后一块木板。",
+    w:507, h:900 },
 
   { file:"Weixin Image_20260823162954_88_26.jpg",
     title:"Two Skies", zh:"两片天",
     cap:"Stars through the windscreen, a whole town in the wing mirror.",
-    zhCap:"挡风玻璃里是星星，后视镜里是一整座小镇。" },
+    zhCap:"挡风玻璃里是星星，后视镜里是一整座小镇。",
+    w:675, h:900 },
+
+  { file:"IMG_1928.JPG",
+    title:"Summit Conference", zh:"山顶会谈",
+    cap:"Two dogs, one skyline, an important discussion.",
+    zhCap:"两只狗，一条天际线，一场重要会谈。",
+    w:900, h:675 },
 
   { file:"Weixin Image_20260823154808_80_26.jpg",
     title:"Right of Way", zh:"让路",
     cap:"Eleven ducklings, one crossing, no negotiation.",
-    zhCap:"十一只小鸭过马路，没有商量的余地。" },
+    zhCap:"十一只小鸭过马路，没有商量的余地。",
+    w:507, h:900 },
+
+  { file:"Weixin Image_20260823162949_84_26.jpg",
+    title:"Inviting the Moon", zh:"举杯邀月",
+    cap:"Everyone on the balcony had the same idea.",
+    zhCap:"那天晚上，阳台上的人想的都是同一件事。",
+    w:900, h:613 },
 
   { file:"Weixin Image_20260823163002_93_26.jpg",
     title:"Low Cloud, Long Beach", zh:"低云长滩",
     cap:"The weather came down to meet them halfway.",
-    zhCap:"云压得很低，像是下来接他们。" },
-
-  { file:"Weixin Image_20260823162949_84_26.jpg",
-    title:"Shooting the Moon", zh:"拍月亮",
-    cap:"Everyone on the balcony had the same idea.",
-    zhCap:"那天晚上，阳台上的人想的都是同一件事。" },
+    zhCap:"云压得很低，像是下来接他们。",
+    w:506, h:900 },
 
   { file:"Weixin Image_20260823154755_76_26.jpg",
     title:"Two on the Breakwater", zh:"堤上",
     cap:"The sky took up almost everything; they took the rest.",
-    zhCap:"天空占去了几乎所有，剩下的留给他们。" },
+    zhCap:"天空占去了几乎所有，剩下的留给他们。",
+    w:506, h:900 },
 
   { file:"Weixin Image_20260823162950_86_26.jpg",
     title:"Above the Weather", zh:"云上",
     cap:"Six kilometres up, the day was still going on.",
-    zhCap:"六公里高处，白天还没有结束。" },
+    zhCap:"六公里高处，白天还没有结束。",
+    w:900, h:675 },
 
   { file:"Weixin Image_20260823154757_78_26.jpg",
     title:"Waiting for the Driver", zh:"等主人",
     cap:"He has the wheel. He does not have the keys.",
-    zhCap:"方向盘归它，钥匙不归它。" },
+    zhCap:"方向盘归它，钥匙不归它。",
+    w:507, h:900 },
+
+  { file:"IMG_1933.JPG",
+    title:"Two Hour Max Stay", zh:"最多停两小时",
+    cap:"The sign does not apply to everyone.",
+    zhCap:"这块牌子管不了所有人。",
+    w:506, h:900 },
+
+  { file:"IMG_2911.JPG",
+    title:"Rider, Low Tide", zh:"退潮时的骑手",
+    cap:"The whole beach, and they kept to the waterline.",
+    zhCap:"整片沙滩都空着，他们仍沿着水线走。",
+    w:900, h:675 },
 
   { file:"Weixin Image_20260823162955_89_26.jpg",
     title:"Two on a Lamp", zh:"灯上二鸟",
     cap:"The whole sky available, and they chose the one metal branch.",
-    zhCap:"整片天空都可以停，它们选了唯一一根铁枝。" },
+    zhCap:"整片天空都可以停，它们选了唯一一根铁枝。",
+    w:507, h:900 },
 
   { file:"Weixin Image_20260823163003_94_26.jpg",
     title:"Cold Swim", zh:"下水",
     cap:"Snow on the far range; he went in anyway.",
-    zhCap:"对面山上还有雪，它还是下去了。" },
+    zhCap:"对面山上还有雪，它还是下去了。",
+    w:507, h:900 },
+
+  { file:"IMG_1691.JPG",
+    title:"Autumn Overhead", zh:"头顶的秋天",
+    cap:"Look up in April and the street has a ceiling.",
+    zhCap:"四月抬头，街道是有天花板的。",
+    w:900, h:675 },
 
   { file:"Weixin Image_20260823162956_90_26.jpg",
     title:"Everyone Came to Watch", zh:"都来看",
     cap:"A roofline turned into a row of silhouettes.",
-    zhCap:"屋脊变成了一排剪影。" },
+    zhCap:"屋脊变成了一排剪影。",
+    w:416, h:900 },
+
+  { file:"IMG_2309.JPG",
+    title:"Tekapo in Winter", zh:"冬天的特卡波",
+    cap:"Snow to the waterline, and the lake still that colour.",
+    zhCap:"雪一直下到水边，湖水还是那个颜色。",
+    w:900, h:675 },
+
+  { file:"IMG_2328.JPG",
+    title:"Snowline", zh:"雪线",
+    cap:"The Alps put everything else in the photo out of scale.",
+    zhCap:"有了那排雪山，画面里别的东西都失了比例。",
+    w:900, h:675 },
+
+  { file:"IMG_1849.JPG",
+    title:"Somewhere on That Hill", zh:"山坡上的一点红",
+    cap:"Find the red coat.",
+    zhCap:"找找那件红外套。",
+    w:675, h:900 },
+
+  { file:"IMG_2520.JPG",
+    title:"The Duck Committee", zh:"看鸭子的人",
+    cap:"Mountains behind them; the duck had their full attention.",
+    zhCap:"身后是雪山，但他们只看那只鸭子。",
+    w:900, h:675 },
+
+  { file:"IMG_2494.JPG",
+    title:"Wanaka, After Sunset", zh:"瓦纳卡日落之后",
+    cap:"The best ten minutes come after the sun has gone.",
+    zhCap:"最好的十分钟，在太阳走了以后。",
+    w:900, h:675 },
 
   { file:"Weixin Image_20260823154756_77_26.jpg",
     title:"Lakeside Regular", zh:"湖畔常客",
     cap:"Mountains, steamers, and a bird entirely unimpressed.",
-    zhCap:"雪山与游船，和一只毫不动容的鸟。" },
+    zhCap:"雪山与游船，和一只毫不动容的鸟。",
+    w:507, h:900 },
 
-  { file:"Weixin Image_20260823162958_92_26.jpg",
-    title:"Skyline Walk", zh:"天际线上的散步",
-    cap:"From down in the grass, an ordinary path becomes the horizon.",
-    zhCap:"趴在草里看，一条普通的小路就成了地平线。" },
+  { file:"IMG_2012.JPG",
+    title:"Last Light Over Town", zh:"城市上空最后的光",
+    cap:"Pulled over on the way home for this.",
+    zhCap:"回家路上把车停在了路边。",
+    w:900, h:506 },
+
+  { file:"IMG_2189.JPG",
+    title:"Harbour, Pink Hour", zh:"粉色时刻",
+    cap:"For a few minutes the whole sky was one soft colour.",
+    zhCap:"有那么几分钟，整片天只有一种淡色。",
+    w:900, h:675 },
+
+  { file:"IMG_1858.JPG",
+    title:"Two in the Long Grass", zh:"草深处",
+    cap:"The grass came up to the horizon and swallowed them.",
+    zhCap:"草长到了地平线，把他们吞了进去。",
+    w:675, h:900 },
+
+  { file:"IMG_2091.JPG",
+    title:"Weather Coming", zh:"要变天了",
+    cap:"You could watch it arrive from a long way off.",
+    zhCap:"很远就能看见它过来。",
+    w:900, h:675 },
+
+  { file:"IMG_2090.JPG",
+    title:"Low Water", zh:"水落",
+    cap:"The ramp ran out before the lake began.",
+    zhCap:"坡道到了尽头，湖还没开始。",
+    w:900, h:506 },
 
   { file:"Weixin Image_20260823162950_85_26.jpg",
     title:"Through Cloud", zh:"穿云",
     cap:"It kept going in and out all evening.",
-    zhCap:"它进进出出了一整晚。" },
+    zhCap:"它进进出出了一整晚。",
+    w:675, h:900 },
 
-  { file:"Weixin Image_20260823154809_81_26.jpg",
-    title:"Three Shells", zh:"三枚贝壳",
-    cap:"Brought back from the beach, dried on the rail, left in a row.",
-    zhCap:"从沙滩带回，晾在栏杆上，排成一列。" },
+  { file:"IMG_1648.JPG",
+    title:"Uphill, in Red", zh:"红衣上坡",
+    cap:"Dragging a stick the entire way.",
+    zhCap:"一路拖着一根棍子。",
+    w:900, h:600 },
+
+  { file:"Weixin Image_20260823162958_92_26.jpg",
+    title:"Skyline Walk", zh:"天际线上的散步",
+    cap:"From down in the grass, an ordinary path becomes the horizon.",
+    zhCap:"趴在草里看，一条普通的小路就成了地平线。",
+    w:900, h:675 },
+
+  { file:"IMG_1910.JPG",
+    title:"Message on the Rail", zh:"栏杆上的留言",
+    cap:"Someone wrote it for a stranger. It worked.",
+    zhCap:"有人写给陌生人看的。它起作用了。",
+    w:675, h:900 },
+
+  { file:"IMG_2915.JPG",
+    title:"Since 1993", zh:"源自1993",
+    cap:"Coffee, sand, and no meetings.",
+    zhCap:"咖啡，沙子，没有会。",
+    w:900, h:675 },
 
   { file:"Weixin Image_20260823162953_87_26.jpg",
     title:"City, Out of Focus", zh:"失焦的城市",
     cap:"Some nights the city refuses to come into focus.",
-    zhCap:"有些晚上，城市怎么都对不上焦。" },
+    zhCap:"有些晚上，城市怎么都对不上焦。",
+    w:900, h:675 },
+
+  { file:"Weixin Image_20260823154809_81_26.jpg",
+    title:"Three Shells", zh:"三枚贝壳",
+    cap:"Brought back from the beach, dried on the rail, left in a row.",
+    zhCap:"从沙滩带回，晾在栏杆上，排成一列。",
+    w:675, h:900 },
+
+  { file:"IMG_3157.JPG",
+    title:"Someone Was Already There", zh:"已经有人在了",
+    cap:"The sky did that, and one person sat and watched it.",
+    zhCap:"天空演了这么一场，有一个人坐在那里看完。",
+    w:900, h:675 },
+
+  { file:"IMG_3173.JPG",
+    title:"Shoulder to Shoulder", zh:"肩并肩",
+    cap:"Nobody looked at the camera. Quite right too.",
+    zhCap:"没有人看镜头。也应该这样。",
+    w:900, h:505 },
+
+  { file:"IMG_3162.JPG",
+    title:"Corona", zh:"极光冠冕",
+    cap:"Straight up, where the curtains meet.",
+    zhCap:"正对头顶，光幕交汇的地方。",
+    w:675, h:900 },
 
   { file:"Weixin Image_20260823154812_83_26.jpg",
     title:"Self-portrait with Daisies", zh:"雏菊自画像",
     cap:"The lawn lent me two eyes.",
-    zhCap:"草地借给我两只眼睛。" }
+    zhCap:"草地借给我两只眼睛。",
+    w:416, h:900 }
 ];
 /* PHOTOS:END */
 
-/* ---------- build the grid ---------- */
+/* ---------- 图片路径 ----------
+   原图很大（相机直出动辄 3–10 MB），页面不直接用。
+   update_gallery.py 会生成两级派生图：
+     photographs/thumbs/  长边 900px  -> 网格
+     photographs/large/   长边 2000px -> 灯箱
+   PHOTOS 数组里存的仍是原图文件名，这里按名字推导出派生图路径。
+   派生图统一是 .jpg，所以先把原后缀去掉。                      */
+function derived(dir, file){
+  return 'photographs/' + dir + '/' +
+         encodeURIComponent(file.replace(/\.[^.]+$/, '')) + '.jpg';
+}
+const thumbOf = function(f){ return derived('thumbs', f); };
+const largeOf = function(f){ return derived('large',  f); };
+
+/* ---------- build the grid ----------
+   img 上带 width/height，浏览器据此先留出位置，懒加载时页面不会跳。 */
 const grid = document.getElementById('grid');
 grid.innerHTML = PHOTOS.map(function(p, i){
+  var dim = (p.w && p.h) ? ' width="' + p.w + '" height="' + p.h + '"' : '';
   return '<figure class="card" data-i="' + i + '">' +
-           '<img src="photographs/' + encodeURIComponent(p.file) + '" alt="' + p.title + '" loading="lazy" decoding="async">' +
+           '<img src="' + thumbOf(p.file) + '" alt="' + p.title + '"' + dim +
+                ' loading="lazy" decoding="async">' +
            '<figcaption class="meta"><h3>' + p.title + '</h3>' +
            '<div class="zh">' + p.zh + '</div></figcaption>' +
          '</figure>';
 }).join('');
 document.getElementById('count').textContent = PHOTOS.length + ' Photographs';
+
+/* ---------- 等高分栏 ----------
+   CSS 多栏只能按顺序灌，到 40 多张时最后一栏会短一大截。
+   这里改成：按数组顺序逐张放进"当前最矮"的一栏。
+   高度用 h/w 估算（各栏等宽，所以宽高比就正比于真实高度），
+   再加一个常数模拟卡片间距，不需要等图片加载完。          */
+var gridCards = Array.prototype.slice.call(grid.children);
+
+function columnsForWidth(){
+  if (window.innerWidth <= 620)  return 1;
+  if (window.innerWidth <= 1000) return 2;
+  return 3;
+}
+
+function packGrid(){
+  var n = columnsForWidth();
+  if (n === packGrid.n) return;        // 列数没变就不用重排
+  packGrid.n = n;
+
+  var cost = gridCards.map(function(el, i){
+    var p = PHOTOS[i];
+    return (p.w && p.h ? p.h / p.w : 1) + 0.06;          // 0.06 ≈ 卡片间距
+  });
+
+  var c, k;
+  var heights = [];
+  for (c = 0; c < n; c++) heights.push(0);
+
+  // 前面的照片按"放进当前最矮的一栏"贪心分配
+  var TAIL = Math.min(8, gridCards.length);              // 末尾留给穷举
+  var head = gridCards.length - TAIL;
+  var pick = [];
+  for (var i = 0; i < head; i++){
+    k = 0;
+    for (c = 1; c < n; c++){ if (heights[c] < heights[k]) k = c; }
+    pick.push(k);
+    heights[k] += cost[i];
+  }
+
+  // 最后 TAIL 张穷举所有分法，取栏底落差最小的那种。
+  // 贪心只看眼前，收尾时常留下一整张图的空缺；穷举能把它压下去。
+  var best = null, bestSpread = Infinity, total = Math.pow(n, TAIL);
+  for (var m = 0; m < total; m++){
+    var hs = heights.slice(), assign = [], v = m, ok = true;
+    for (var t = 0; t < TAIL; t++){
+      var col = v % n; v = (v - col) / n;
+      assign.push(col);
+      hs[col] += cost[head + t];
+    }
+    var hi = Math.max.apply(null, hs), lo = Math.min.apply(null, hs);
+    if (ok && hi - lo < bestSpread){ bestSpread = hi - lo; best = assign; }
+  }
+  pick = pick.concat(best);
+
+  var cols = [];
+  for (c = 0; c < n; c++){
+    cols.push(document.createElement('div'));
+    cols[c].className = 'col';
+  }
+  gridCards.forEach(function(el, i){ cols[pick[i]].appendChild(el); });
+
+  grid.textContent = '';
+  cols.forEach(function(d){ grid.appendChild(d); });
+  grid.classList.add('packed');
+}
+packGrid();
+
+var packTimer;
+window.addEventListener('resize', function(){
+  clearTimeout(packTimer);
+  packTimer = setTimeout(packGrid, 150);
+});
 
 /* ---------- reveal on scroll (progressive enhancement) ---------- */
 var cards = document.querySelectorAll('.card');
@@ -453,7 +708,7 @@ var cur   = 0;
 function show(i){
   cur = (i + PHOTOS.length) % PHOTOS.length;
   var p = PHOTOS[cur];
-  lbImg.src = 'photographs/' + encodeURIComponent(p.file);
+  lbImg.src = largeOf(p.file);
   lbImg.alt = p.title;
   document.getElementById('lbTitle').textContent = p.title;
   document.getElementById('lbZh').textContent    = p.zh;
