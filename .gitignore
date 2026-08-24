@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# 系统垃圾文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 记录原图放在哪（每台电脑不一样，不进仓库）
+.gallery-source
+
+# ---------------------------------------------------------------
+# 照片：仓库里只保留 thumbs/ 和 large/，网页只用这两个目录。
+# 原图（相机直出，几 MB 到 10 MB 一张）一律不进 git。
+# ---------------------------------------------------------------
+photographs/*
+!photographs/thumbs/
+!photographs/large/
